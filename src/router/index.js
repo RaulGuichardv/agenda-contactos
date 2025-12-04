@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
 import HomeView from '../views/HomeView.vue'
@@ -38,10 +38,11 @@ const routes = [
   }
 ]
 
+
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes
-})
+});
 
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
