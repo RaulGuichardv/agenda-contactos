@@ -54,6 +54,7 @@ const loading = ref(false)
 const error = ref(null)
 const query = ref('')
 
+// Usamos apiBase y authHeaders del store
 const API_BASE = auth.apiBase()
 
 const fetchContacts = async () => {
@@ -61,9 +62,7 @@ const fetchContacts = async () => {
   error.value = null
   try {
     const res = await fetch(`${API_BASE}/contactos/index.php`, {
-      headers: {
-        Authorization: `Bearer ${auth.token}`
-      }
+      headers: auth.authHeaders() // ✔ Aquí ya usamos X-Auth-Token
     })
     const data = await res.json()
     if (!res.ok) throw new Error(data.error || 'Error al obtener contactos')
@@ -80,9 +79,7 @@ const removeContact = async (id) => {
   try {
     const res = await fetch(`${API_BASE}/contactos/eliminar.php?id=${id}`, {
       method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${auth.token}`
-      }
+      headers: auth.authHeaders() // ✔ También aquí usamos X-Auth-Token
     })
     const data = await res.json()
     if (!res.ok) throw new Error(data.error || 'Error al eliminar')

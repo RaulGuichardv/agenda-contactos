@@ -66,7 +66,7 @@ const loadContact = async () => {
   error.value = null
   try {
     const res = await fetch(`${API_BASE}/contactos/index.php`, {
-      headers: { Authorization: `Bearer ${auth.token}` }
+      headers: auth.authHeaders() // ✔ Usamos X-Auth-Token
     })
     const data = await res.json()
     if (!res.ok) throw new Error(data.error || 'Error al obtener contactos')
@@ -96,31 +96,27 @@ const onSubmit = async () => {
   error.value = null
   successMessage.value = ''
   try {
+    let res
     if (isEdit.value) {
-      const res = await fetch(
+      res = await fetch(
         `${API_BASE}/contactos/actualizar.php?id=${route.params.id}`,
         {
           method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${auth.token}`
-          },
+          headers: auth.authHeaders(), // ✔ X-Auth-Token
           body: JSON.stringify(form.value)
         }
       )
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Error al actualizar')
-      successMessage.value = 'Contacto actualizado'
     } else {
-      const res = await fetch(`${API_BASE}/contactos/crear.php`, {
+      res = await fetch(`${API_BASE}/contactos/crear.php`, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${auth.token}`
-        },
+        headers: auth.authHeaders(), // ✔ X-Auth-Token
         body: JSON.stringify(form.value)
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Error al crear')
-      successMessage.value = 'Contacto creado'
+    }
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || (isEdit.value ? 'Error al actualizar' : 'Error al crear'))
+    successMessage.value = isEdit.value ? 'Contacto actualizado' : 'Contacto creado'
+    if (!isEdit.value) {
       form.value = {
         nombre: '',
         apellido: '',

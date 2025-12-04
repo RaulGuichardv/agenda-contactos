@@ -53,9 +53,7 @@ const onSubmit = async () => {
     }
     const res = await fetch(`${API_BASE}/editar.php`, {
       method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${auth.token}`
-      },
+      headers: auth.authHeaders(), // ✔ Aquí usamos X-Auth-Token
       body: JSON.stringify(body)
     })
     const data = await res.json()
